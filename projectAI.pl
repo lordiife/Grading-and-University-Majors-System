@@ -3,103 +3,104 @@
 
 % Health Field:
 
-major(health,doctor_of_Medicine, 98.25).
-major(health,doctor_of_Dentistry, 97.55).
-major(health,doctor_of_Pharmacy, 96.25).
-major(health,pharmacy, 95.85).
-major(health,nursing_Men, 93.70).
-major(health,nursing_women,92.95).
-major(health,physical_Therapy, 93.60).
-major(health,occupational_Therapy,91.85).
-major(health,artificial_Limbs,90.40).
-major(health,hearing_and_Speech_Sciences,90.00).
+major(health, doctor_of_medicine, 98.25).
+major(health, doctor_of_dentistry, 97.55).
+major(health, doctor_of_pharmacy, 96.25).
+major(health, pharmacy, 95.85).
+major(health, nursing_men, 93.70).
+major(health, nursing_women, 92.95).
+major(health, physical_therapy, 93.60).
+major(health, occupational_therapy, 91.85).
+major(health, artificial_limbs, 90.40).
+major(health, hearing_and_speech_sciences, 90.00).
 
 % Engineering and Technology Field:
 
-major(engineering_and_technology,computer_Engineering, 97.05).
-major(engineering_and_technology,industrial_Engineering, 96.25).
-major(engineering_and_technology,electrical_Engineering, 95.15).
-major(engineering_and_technology,chemical_Engineering, 94.05).
-major(engineering_and_technology,civil_Engineering, 90.15).
-major(engineering_and_technology,mechanical_Engineering, 95.00).
-major(engineering_and_technology,mechatronics_Engineering, 95.80).
-major(engineering_and_technology,computer_Science, 96.50).
-major(engineering_and_technology,computer_Information_Systems, 94.50).
-major(engineering_and_technology,business_Information_Technology, 91.55).
-major(engineering_and_technology,data_Science, 93.20).
-major(engineering_and_technology,cybersecurity, 94.75).
-major(engineering_and_technology,artificial_Intelligence, 95.85).
-major(engineering_and_technology,mathematics, 87.25).
-major(engineering_and_technology,physics, 84.65).
-major(engineering_and_technology,chemistry, 88.85).
-major(engineering_and_technology,industrial_Chemistry, 89.20).
-major(engineering_and_technology,biological_Sciences, 86.25).
-major(engineering_and_technology,geology, 79.55).
-major(engineering_and_technology,medical_Laboratory_Sciences, 91.15).
-major(engineering_and_technology,statistics_and_Data_Science, 86.10).
-major(engineering_and_technology,architecture, 94.30).
-major(engineering_and_technology,gardening_and_Crops, 80.40).
-major(engineering_and_technology,plant_Protection, 80.20).
-major(engineering_and_technology,website_Design_and_Coordination, 85.60).
-major(engineering_and_technology,animal_Production, 83.35).
-major(engineering_and_technology,food_Science_and_Technology, 92.95).
-major(engineering_and_technology,human_Nutrition_and_Diets, 96.35).
-major(engineering_and_technology,land_Water_and_Environment, 82.50).
-major(engineering_and_technology,agricultural_Economics_and_Agricultural_Business_Management, 85.15).
+major(engineering_and_technology, computer_engineering, 97.05).
+major(engineering_and_technology, industrial_engineering, 96.25).
+major(engineering_and_technology, electrical_engineering, 95.15).
+major(engineering_and_technology, chemical_engineering, 94.05).
+major(engineering_and_technology, civil_engineering, 90.15).
+major(engineering_and_technology, mechanical_engineering, 95.00).
+major(engineering_and_technology, mechatronics_engineering, 95.80).
+major(engineering_and_technology, computer_science, 96.50).
+major(engineering_and_technology, computer_information_systems, 94.50).
+major(engineering_and_technology, business_information_technology, 91.55).
+major(engineering_and_technology, data_science, 93.20).
+major(engineering_and_technology, cybersecurity, 94.75).
+major(engineering_and_technology, artificial_intelligence, 95.85).
+major(engineering_and_technology, mathematics, 87.25).
+major(engineering_and_technology, physics, 84.65).
+major(engineering_and_technology, chemistry, 88.85).
+major(engineering_and_technology, industrial_chemistry, 89.20).
+major(engineering_and_technology, biological_sciences, 86.25).
+major(engineering_and_technology, geology, 79.55).
+major(engineering_and_technology, medical_laboratory_sciences, 91.15).
+major(engineering_and_technology, statistics_and_data_science, 86.10).
+major(engineering_and_technology, architecture, 94.30).
+major(engineering_and_technology, gardening_and_crops, 80.40).
+major(engineering_and_technology, plant_protection, 80.20).
+major(engineering_and_technology, website_design_and_coordination, 85.60).
+major(engineering_and_technology, animal_production, 83.35).
+major(engineering_and_technology, food_science_and_technology, 92.95).
+major(engineering_and_technology, human_nutrition_and_diets, 96.35).
+major(engineering_and_technology, land_water_and_environment, 82.50).
+major(engineering_and_technology, agricultural_economics_and_agricultural_business_management, 85.15).
 
 % Languages and Humanities Field:
 
-major(languages_and_humanities,english_Language_and_Literature, 95.30).
-major(languages_and_humanities,applied_English, 97.10).
-major(languages_and_humanities,french_Language_and_Literature, 89.15).
-major(languages_and_humanities,german_English, 92.55).
-major(languages_and_humanities,italian_English, 91.05).
-major(languages_and_humanities,spanish_English,92.85).
-major(languages_and_humanities,korean_English, 90.30).
-major(languages_and_humanities,chinese_English, 95.05).
-major(languages_and_humanities,russian_English, 89.85).
-major(languages_and_humanities,turkish_English, 90.75).
-major(languages_and_humanities,french_and_English_Double_Major_Program, 92.00).
-major(languages_and_humanities,arabic_Language_and_Literature, 95.35).
-major(languages_and_humanities,class_Teacher_Women, 92.15).
-major(languages_and_humanities,special_Education, 90.85).
-major(languages_and_humanities,early_Childhood_Education, 86.00).
-major(languages_and_humanities,counseling_and_Mental_Health, 91.30).
-major(languages_and_humanities,psychology, 92.55).
-major(languages_and_humanities,law, 95.60).
-major(languages_and_humanities,political_Science, 91.35).
-major(languages_and_humanities,history, 88.10).
-major(languages_and_humanities,geography, 88.05).
-major(languages_and_humanities,philosophy, 85.80).
-major(languages_and_humanities,sociology, 89.40).
-major(languages_and_humanities,social_Work, 86.50).
-major(languages_and_humanities,antiquities, 84.00).
-major(languages_and_humanities,heritage_Resources_Management, 83.75).
-major(languages_and_humanities,hospitality_Management, 86.00).
-major(languages_and_humanities,tourism_Management, 89.40).
-major(languages_and_humanities,event_Management, 88.13).
-major(languages_and_humanities,foundations_of_Religion, 88.95).
-major(languages_and_humanities,islamic_Jurisprudence_and_its_Foundation, 89.70).
-major(languages_and_humanities,physical_Education, 90.55).
-major(languages_and_humanities,movement_Sciences_and_Sports_Training, 86.60).
+major(languages_and_humanities, english_language_and_literature, 95.30).
+major(languages_and_humanities, applied_english, 97.10).
+major(languages_and_humanities, french_language_and_literature, 89.15).
+major(languages_and_humanities, german_english, 92.55).
+major(languages_and_humanities, italian_english, 91.05).
+major(languages_and_humanities, spanish_english, 92.85).
+major(languages_and_humanities, korean_english, 90.30).
+major(languages_and_humanities, chinese_english, 95.05).
+major(languages_and_humanities, russian_english, 89.85).
+major(languages_and_humanities, turkish_english, 90.75).
+major(languages_and_humanities, french_and_english_double_major_program, 92.00).
+major(languages_and_humanities, arabic_language_and_literature, 95.35).
+major(languages_and_humanities, class_teacher_women, 92.15).
+major(languages_and_humanities, special_education, 90.85).
+major(languages_and_humanities, early_childhood_education, 86.00).
+major(languages_and_humanities, counseling_and_mental_health, 91.30).
+major(languages_and_humanities, psychology, 92.55).
+major(languages_and_humanities, law, 95.60).
+major(languages_and_humanities, political_science, 91.35).
+major(languages_and_humanities, history, 88.10).
+major(languages_and_humanities, geography, 88.05).
+major(languages_and_humanities, philosophy, 85.80).
+major(languages_and_humanities, sociology, 89.40).
+major(languages_and_humanities, social_work, 86.50).
+major(languages_and_humanities, antiquities, 84.00).
+major(languages_and_humanities, heritage_resources_management, 83.75).
+major(languages_and_humanities, hospitality_management, 86.00).
+major(languages_and_humanities, tourism_management, 89.40).
+major(languages_and_humanities, event_management, 88.13).
+major(languages_and_humanities, foundations_of_religion, 88.95).
+major(languages_and_humanities, islamic_jurisprudence_and_its_foundation, 89.70).
+major(languages_and_humanities, physical_education, 90.55).
+major(languages_and_humanities, movement_sciences_and_sports_training, 86.60).
 
 % Business Administration Field:
 
-major(business_administration,business_Management, 93.55).
-major(business_administration,accounting, 95.80).
-major(business_administration,finance, 92.50).
-major(business_administration,marketing, 94.60).
-major(business_administration,management_Information_Systems, 94.50).
-major(business_administration,public_Administration, 91.05).
-major(business_administration,business_Economics, 92.05).
-major(business_administration,islamic_Banks, 89.15).
+major(business_administration, business_management, 93.55).
+major(business_administration, accounting, 95.80).
+major(business_administration, finance, 92.50).
+major(business_administration, marketing, 94.60).
+major(business_administration, management_information_systems, 94.50).
+major(business_administration, public_administration, 91.05).
+major(business_administration, business_economics, 92.05).
+major(business_administration, islamic_banks, 89.15).
 
 % Input Functions
 %______________________________________________________________________________________________________________
 
 get_input(CleanInput) :-
     read_line_to_string(user_input, RawInput),
-    downcase_atom(RawInput, CleanInput).
+    normalize_space(string(Normalized), RawInput),
+    downcase_atom(Normalized, CleanInput).
 
 read_number_range(Prompt, Min, Max, Number) :-
     write(Prompt),
