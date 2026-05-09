@@ -1,0 +1,221 @@
+% Database
+%______________________________________________________________________________________________________________
+
+% Health Field:
+
+major(health,doctor_of_Medicine, 98.25).
+major(health,doctor_of_Dentistry, 97.55).
+major(health,doctor_of_Pharmacy, 96.25).
+major(health,pharmacy, 95.85).
+major(health,nursing_Men, 93.70).
+major(health,nursing_women,92.95).
+major(health,physical_Therapy, 93.60).
+major(health,occupational_Therapy,91.85).
+major(health,artificial_Limbs,90.40).
+major(health,hearing_and_Speech_Sciences,90.00).
+
+% Engineering and Technology Field:
+
+major(engineering_and_technology,computer_Engineering, 97.05).
+major(engineering_and_technology,industrial_Engineering, 96.25).
+major(engineering_and_technology,electrical_Engineering, 95.15).
+major(engineering_and_technology,chemical_Engineering, 94.05).
+major(engineering_and_technology,civil_Engineering, 90.15).
+major(engineering_and_technology,mechanical_Engineering, 95.00).
+major(engineering_and_technology,mechatronics_Engineering, 95.80).
+major(engineering_and_technology,computer_Science, 96.50).
+major(engineering_and_technology,computer_Information_Systems, 94.50).
+major(engineering_and_technology,business_Information_Technology, 91.55).
+major(engineering_and_technology,data_Science, 93.20).
+major(engineering_and_technology,cybersecurity, 94.75).
+major(engineering_and_technology,artificial_Intelligence, 95.85).
+major(engineering_and_technology,mathematics, 87.25).
+major(engineering_and_technology,physics, 84.65).
+major(engineering_and_technology,chemistry, 88.85).
+major(engineering_and_technology,industrial_Chemistry, 89.20).
+major(engineering_and_technology,biological_Sciences, 86.25).
+major(engineering_and_technology,geology, 79.55).
+major(engineering_and_technology,medical_Laboratory_Sciences, 91.15).
+major(engineering_and_technology,statistics_and_Data_Science, 86.10).
+major(engineering_and_technology,architecture, 94.30).
+major(engineering_and_technology,gardening_and_Crops, 80.40).
+major(engineering_and_technology,plant_Protection, 80.20).
+major(engineering_and_technology,website_Design_and_Coordination, 85.60).
+major(engineering_and_technology,animal_Production, 83.35).
+major(engineering_and_technology,food_Science_and_Technology, 92.95).
+major(engineering_and_technology,human_Nutrition_and_Diets, 96.35).
+major(engineering_and_technology,land_Water_and_Environment, 82.50).
+major(engineering_and_technology,agricultural_Economics_and_Agricultural_Business_Management, 85.15).
+
+% Languages and Humanities Field:
+
+major(languages_and_humanities,english_Language_and_Literature, 95.30).
+major(languages_and_humanities,applied_English, 97.10).
+major(languages_and_humanities,french_Language_and_Literature, 89.15).
+major(languages_and_humanities,german_English, 92.55).
+major(languages_and_humanities,italian_English, 91.05).
+major(languages_and_humanities,spanish_English,92.85).
+major(languages_and_humanities,korean_English, 90.30).
+major(languages_and_humanities,chinese_English, 95.05).
+major(languages_and_humanities,russian_English, 89.85).
+major(languages_and_humanities,turkish_English, 90.75).
+major(languages_and_humanities,french_and_English_Double_Major_Program, 92.00).
+major(languages_and_humanities,arabic_Language_and_Literature, 95.35).
+major(languages_and_humanities,class_Teacher_Women, 92.15).
+major(languages_and_humanities,special_Education, 90.85).
+major(languages_and_humanities,early_Childhood_Education, 86.00).
+major(languages_and_humanities,counseling_and_Mental_Health, 91.30).
+major(languages_and_humanities,psychology, 92.55).
+major(languages_and_humanities,law, 95.60).
+major(languages_and_humanities,political_Science, 91.35).
+major(languages_and_humanities,history, 88.10).
+major(languages_and_humanities,geography, 88.05).
+major(languages_and_humanities,philosophy, 85.80).
+major(languages_and_humanities,sociology, 89.40).
+major(languages_and_humanities,social_Work, 86.50).
+major(languages_and_humanities,antiquities, 84.00).
+major(languages_and_humanities,heritage_Resources_Management, 83.75).
+major(languages_and_humanities,hospitality_Management, 86.00).
+major(languages_and_humanities,tourism_Management, 89.40).
+major(languages_and_humanities,event_Management, 88.13).
+major(languages_and_humanities,foundations_of_Religion, 88.95).
+major(languages_and_humanities,islamic_Jurisprudence_and_its_Foundation, 89.70).
+major(languages_and_humanities,physical_Education, 90.55).
+major(languages_and_humanities,movement_Sciences_and_Sports_Training, 86.60).
+
+% Business Administration Field:
+
+major(business_administration,business_Management, 93.55).
+major(business_administration,accounting, 95.80).
+major(business_administration,finance, 92.50).
+major(business_administration,marketing, 94.60).
+major(business_administration,management_Information_Systems, 94.50).
+major(business_administration,public_Administration, 91.05).
+major(business_administration,business_Economics, 92.05).
+major(business_administration,islamic_Banks, 89.15).
+
+% Input Functions
+%______________________________________________________________________________________________________________
+
+get_input(CleanInput) :-
+    read_line_to_string(user_input, RawInput),
+    downcase_atom(RawInput, CleanInput).
+
+read_number_range(Prompt, Min, Max, Number) :-
+    write(Prompt),
+    read_line_to_string(user_input, Input),
+    normalize_space(atom(Atom), Input),
+    (   atom_number(Atom, Value),
+        number(Value),
+        Value >= Min,
+        Value =< Max
+    ->  Number = Value
+    ;   format('Invalid input. Please enter a number between ~w and ~w.~n', [Min, Max]),
+        read_number_range(Prompt, Min, Max, Number)
+    ).
+
+get_valid_input(Input) :-
+    get_input(RawInput),
+    (   (RawInput == yes ; RawInput == no)
+    ->  Input = RawInput
+    ;   write('Invalid input. Please enter yes or no: '),
+        nl,
+        flush_output(current_output),
+        get_valid_input(Input)
+    ).
+
+get_valid_field(Prompt, Field) :-
+    write(Prompt),
+    nl,
+    get_input(RawField),
+    (   member(RawField, [health, engineering_and_technology, languages_and_humanities, business_administration])
+    ->  Field = RawField
+    ;   write('Invalid field entered. Please choose one of the listed fields.'),
+        nl,
+        flush_output(current_output),
+        get_valid_field(Prompt, Field)
+    ).
+
+% Grade Calculation & Major Choice Functions
+%______________________________________________________________________________________________________________
+
+calculate_total_grade(TotalGrade, Field) :-
+    write('Please enter your grades for the first year subjects.'), nl,
+    read_number_range('Enter your English grade (out of 100): ', 0, 100, EnglishGrade),
+    read_number_range('Enter your Arabic grade (out of 100): ', 0, 100, ArabicGrade),
+    read_number_range('Enter your Islamic Education grade (out of 60): ', 0, 60, IslamicEducationGrade),
+    read_number_range('Enter your History of Jordan grade (out of 40): ', 0, 40, HistoryOfJordanGrade),
+    TotalGrade1 is (EnglishGrade + ArabicGrade + IslamicEducationGrade + HistoryOfJordanGrade)/10,
+    write('First Year Grade (out of 30): '),
+    writeln(TotalGrade1),
+
+    get_valid_field('Enter your field (health, engineering_and_technology, languages_and_humanities, business_administration): ', Field),
+
+    (Field == health ->
+        (read_number_range('Advanced English (out of 175): ', 0, 175, AdvancedEnglishGrade),
+         read_number_range('Chemistry (out of 175): ', 0, 175, ChemistryGrade),
+         read_number_range('Biology (out of 175): ', 0, 175, BiologyGrade),
+         read_number_range('Math (out of 175): ', 0, 175, MathGrade),
+         TotalGrade2 is (AdvancedEnglishGrade + ChemistryGrade + BiologyGrade + MathGrade)/10,
+         write('Second Year Grade (out of 70): '),
+         writeln(TotalGrade2))
+    ; Field == engineering_and_technology ->
+        (read_number_range('Advanced English (out of 175): ', 0, 175, AdvancedEnglishGrade),
+         read_number_range('Physics (out of 175): ', 0, 175, PhysicsGrade),
+         read_number_range('Math (out of 175): ', 0, 175, MathGrade),
+         read_number_range('Geology (out of 175): ', 0, 175, GeologyGrade),
+         TotalGrade2 is (AdvancedEnglishGrade + PhysicsGrade + MathGrade + GeologyGrade)/10,
+         write('Second Year Grade (out of 70): '),
+         writeln(TotalGrade2))
+    ; Field == languages_and_humanities ->
+        (read_number_range('Advanced English (out of 175): ', 0, 175, AdvancedEnglishGrade),
+         read_number_range('Advanced Arabic (out of 175): ', 0, 175, AdvancedArabicGrade),
+         read_number_range('Islamic Studies (out of 175): ', 0, 175, IslamicStudiesGrade),
+         read_number_range('Financial Culture (out of 175): ', 0, 175, FinancialCultureGrade),
+         TotalGrade2 is (AdvancedEnglishGrade + AdvancedArabicGrade + IslamicStudiesGrade + FinancialCultureGrade)/10,
+         write('Second Year Grade (out of 70): '),
+         writeln(TotalGrade2))
+    ; Field == business_administration ->
+        (read_number_range('Advanced English (out of 175): ', 0, 175, AdvancedEnglishGrade),
+         read_number_range('Business Math (out of 175): ', 0, 175, BusinessMathGrade),
+         read_number_range('Financial Culture (out of 175): ', 0, 175, FinancialCultureGrade),
+         read_number_range('Islamic Sciences (out of 175): ', 0, 175, IslamicSciencesGrade),
+         TotalGrade2 is (AdvancedEnglishGrade + BusinessMathGrade + FinancialCultureGrade + IslamicSciencesGrade)/10,
+         write('Second Year Grade (out of 70): '),
+         writeln(TotalGrade2))
+    ),
+    TotalGrade is TotalGrade1 + TotalGrade2,
+    write('Calculating your total grade...'), nl,
+    write('Total Grade (out of 100): '), writeln(TotalGrade), nl.
+
+% Eligible Majors Functions
+%______________________________________________________________________________________________________________
+
+get_eligible_majors(Field, Grade, Majors) :-
+    findall(Name, (major(Field, Name, Min), Grade >= Min), Majors).
+
+print_majors([]).
+print_majors([H|T]) :-
+    write(' - '), writeln(H),
+    print_majors(T).
+
+%______________________________________________________________________________________________________________
+
+start :-
+    write('Welcome to the University of Jordan Major Recommendation System!'), nl,
+    write('Do you know your total grade for both years? (yes/no) '),
+    flush_output(current_output),
+    get_valid_input(KnowGrade),
+    (KnowGrade == yes ->
+        (read_number_range('Please enter your total grade (out of 100): ', 0, 100, TotalGrade),
+         get_valid_field('Enter your field (health, engineering_and_technology, languages_and_humanities, business_administration): ', Field))
+    ;
+        calculate_total_grade(TotalGrade, Field)
+    ),
+    get_eligible_majors(Field, TotalGrade, Majors),
+    (Majors == [] ->
+        write('No eligible majors found for your grade and field.'), nl
+    ;
+        write('Eligible majors for you:'), nl,
+        print_majors(Majors)
+    ).
