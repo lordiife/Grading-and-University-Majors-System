@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UJ Major Recommendation System</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #030811;
+    --surface: #080f1e;
+    --surface2: #0d1829;
+    --border: #1a2a45;
+    --border-bright: #1e3a6e;
+    --blue-core: #1a6bff;
+    --blue-light: #4a8fff;
+    --blue-glow: rgba(26,107,255,0.18);
+    --blue-dim: #0e3a8a;
+    --text: #e8f0ff;
+    --text-muted: #6a85b0;
+    --text-dim: #3a5070;
+    --success: #00d4a0;
+    --error: #ff4d6a;
+    --mono: 'DM Mono', monospace;
+    --sans: 'Syne', sans-serif;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grid bg */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(26,107,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(26,107,255,0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 5rem;
+  }
+
+  /* Header */
+  header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--blue-glow);
+    border: 1px solid var(--border-bright);
+    border-radius: 100px;
+    padding: 6px 14px;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--blue-light);
+    font-family: var(--mono);
+    margin-bottom: 1.2rem;
+  }
+  .badge-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--blue-core);
+    box-shadow: 0 0 8px var(--blue-core);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  h1 {
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    margin-bottom: 0.8rem;
+  }
+  h1 span {
+    color: var(--blue-core);
+  }
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    font-weight: 400;
+    max-width: 460px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* Progress bar */
+  .progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 2.5rem;
+  }
+  .progress-bar {
+    flex: 1;
+    height: 3px;
+    background: var(--border);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue-dim), var(--blue-core));
+    border-radius: 99px;
+    transition: width 0.5s ease;
+  }
+  .progress-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    white-space: nowrap;
+  }
+
+  /* Card */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    transition: border-color 0.2s;
+  }
+  .card:focus-within {
+    border-color: var(--border-bright);
+  }
+
+  .card-title {
+    font-size: 0.72rem;
+    font-family: var(--mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--blue-light);
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card-title::before {
+    content: '';
+    display: inline-block;
+    width: 20px; height: 2px;
+    background: var(--blue-core);
+    border-radius: 2px;
+  }
+
+  /* Form elements */
+  label {
+    display: block;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    font-family: var(--mono);
+  }
+
+  .field-group {
+    margin-bottom: 1.2rem;
+  }
+
+  .input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  input[type="number"], select {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 1rem;
+    padding: 12px 16px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -moz-appearance: textfield;
+  }
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+  input[type="number"]:focus, select:focus {
+    border-color: var(--blue-core);
+    box-shadow: 0 0 0 3px var(--blue-glow);
+  }
+
+  .max-tag {
+    position: absolute;
+    right: 12px;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    pointer-events: none;
+  }
+
+  select option { background: var(--surface2); }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media(max-width: 520px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  /* Grade display */
+  .grade-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--blue-glow);
+    border: 1px solid var(--border-bright);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--blue-light);
+  }
+
+  /* Button */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: var(--blue-core);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 28px;
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s, box-shadow 0.2s;
+    letter-spacing: 0.01em;
+  }
+  .btn:hover {
+    background: var(--blue-light);
+    box-shadow: 0 0 24px var(--blue-glow);
+  }
+  .btn:active { transform: scale(0.98); }
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid var(--border-bright);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    padding: 10px 20px;
+  }
+  .btn-ghost:hover {
+    border-color: var(--blue-core);
+    color: var(--blue-light);
+    background: var(--blue-glow);
+    box-shadow: none;
+  }
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  /* Error */
+  .error-msg {
+    color: var(--error);
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    margin-top: 5px;
+    display: none;
+  }
+  .field-error input, .field-error select { border-color: var(--error) !important; }
+  .field-error .error-msg { display: block; }
+  .subject-failed input { border-color: #ff8c00 !important; box-shadow: 0 0 0 3px rgba(255,140,0,0.15) !important; }
+  .subject-failed .error-msg { color: #ff8c00; }
+
+  /* Results */
+  .results-section { display: none; }
+  .results-section.visible { display: block; }
+
+  .score-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    background: var(--surface2);
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border-bright);
+  }
+  .score-label {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+  .score-num {
+    font-size: 4rem;
+    font-weight: 800;
+    color: var(--blue-core);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+  .score-sub {
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+  .score-breakdown {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1rem;
+  }
+  .score-part {
+    text-align: center;
+  }
+  .score-part .val {
+    font-family: var(--mono);
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .score-part .lbl {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    font-family: var(--mono);
+  }
+  .score-divider {
+    width: 1px;
+    background: var(--border);
+    align-self: stretch;
+  }
+
+  /* Schools */
+  .schools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+    margin-bottom: 1.5rem;
+  }
+  .school-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    color: var(--text-muted);
+    font-family: var(--mono);
+    font-size: 0.82rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: left;
+    line-height: 1.4;
+  }
+  .school-btn:hover {
+    border-color: var(--blue-core);
+    color: var(--blue-light);
+    background: var(--blue-glow);
+  }
+  .school-btn.active {
+    border-color: var(--blue-core);
+    background: var(--blue-glow);
+    color: var(--blue-light);
+    box-shadow: 0 0 16px rgba(26,107,255,0.12);
+  }
+
+  /* Majors list */
+  .majors-list {
+    list-style: none;
+  }
+  .major-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.12s;
+    border-radius: 8px;
+  }
+  .major-item:last-child { border-bottom: none; }
+  .major-item:hover { background: var(--surface2); }
+  .major-name {
+    font-size: 0.9rem;
+    color: var(--text);
+    text-transform: capitalize;
+  }
+  .major-score {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--blue-light);
+    background: var(--blue-glow);
+    border: 1px solid var(--border-bright);
+    border-radius: 6px;
+    padding: 3px 10px;
+    white-space: nowrap;
+  }
+
+  /* Step indicators */
+  .step-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+  .step-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--border);
+    transition: all 0.3s;
+  }
+  .step-dot.done { background: var(--blue-dim); }
+  .step-dot.active { background: var(--blue-core); width: 24px; border-radius: 4px; box-shadow: 0 0 8px var(--blue-core); }
+
+  /* Fade in */
+  .fade-in {
+    animation: fadeIn 0.4s ease forwards;
+  }
+  @keyframes fadeIn {
+    from { opacity:0; transform: translateY(12px); }
+    to { opacity:1; transform: translateY(0); }
+  }
+
+  /* Separator */
+  .sep {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 1.5rem 0;
+  }
+
+  .info-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: rgba(26,107,255,0.06);
+    border: 1px solid var(--border-bright);
+    border-radius: 8px;
+    margin-bottom: 1.2rem;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+  .info-row svg { flex-shrink: 0; color: var(--blue-light); }
+
+  /* Toggle */
+  .toggle-row {
+    display: flex;
+    gap: 4px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 4px;
+    margin-bottom: 1.5rem;
+    width: fit-content;
+  }
+  .toggle-btn {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .toggle-btn.active {
+    background: var(--blue-core);
+    color: #fff;
+  }
+
+  .hidden { display: none !important; }
+  .section-title {
+    font-size: 0.82rem;
+    font-family: var(--mono);
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <header>
+    <div class="badge">
+      <span class="badge-dot"></span>
+      University of Jordan
+    </div>
+    <h1>Find Your <span>Major</span></h1>
+    <p class="subtitle">Enter your Tawjihi grades and discover which majors at the University of Jordan you qualify for.</p>
+  </header>
+
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:20%"></div></div>
+    <span class="progress-label" id="progressLabel">Step 1 / 4</span>
+  </div>
+
+  <div class="step-indicator" id="stepDots">
+    <div class="step-dot active" id="dot0"></div>
+    <div class="step-dot" id="dot1"></div>
+    <div class="step-dot" id="dot2"></div>
+    <div class="step-dot" id="dot3"></div>
+  </div>
+
+  <!-- ─── STEP 0: Know your grade? ─── -->
+  <div id="step0" class="fade-in">
+    <div class="card">
+      <div class="card-title">Starting Point</div>
+      <p style="color:var(--text-muted); font-size:0.9rem; margin-bottom:1.5rem; line-height:1.6;">Do you already know your total Tawjihi grade out of 100?</p>
+      <div class="toggle-row">
+        <button class="toggle-btn active" onclick="setKnowGrade(true)">Yes, I know it</button>
+        <button class="toggle-btn" onclick="setKnowGrade(false)">No, calculate it</button>
+      </div>
+
+      <div id="knowGradeSection">
+        <div class="field-group" id="fg_totalGrade">
+          <label>Your total grade (out of 100)</label>
+          <div class="input-wrap">
+            <input type="number" id="totalGradeInput" min="0" max="100" step="0.01" placeholder="e.g. 94.5">
+            <span class="max-tag">/ 100</span>
+          </div>
+          <span class="error-msg">Enter a grade between 0 and 100.</span>
+        </div>
+        <div class="field-group" id="fg_field0">
+          <label>Field of study</label>
+          <select id="fieldInput0">
+            <option value="">— Select a field —</option>
+            <option value="health">Health</option>
+            <option value="engineering_and_technology">Engineering & Technology</option>
+            <option value="languages_and_humanities">Languages & Humanities</option>
+            <option value="business_administration">Business Administration</option>
+          </select>
+          <span class="error-msg">Please select a field.</span>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn" onclick="step0Next()">Continue →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─── STEP 1: First year grades ─── -->
+  <div id="step1" class="hidden fade-in">
+    <div class="card">
+      <div class="card-title">First Year Subjects</div>
+      <div class="info-row">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        These four subjects form 30% of your total grade.
+      </div>
+      <div class="grid-2">
+        <div class="field-group" id="fg_eng">
+          <label>English (out of 100)</label>
+          <div class="input-wrap">
+            <input type="number" id="g_english" min="0" max="100" placeholder="0–100">
+            <span class="max-tag">/ 100</span>
+          </div>
+          <span class="error-msg">Enter 0–100.</span>
+        </div>
+        <div class="field-group" id="fg_ara">
+          <label>Arabic (out of 100)</label>
+          <div class="input-wrap">
+            <input type="number" id="g_arabic" min="0" max="100" placeholder="0–100">
+            <span class="max-tag">/ 100</span>
+          </div>
+          <span class="error-msg">Enter 0–100.</span>
+        </div>
+        <div class="field-group" id="fg_isl">
+          <label>Islamic Education (out of 60)</label>
+          <div class="input-wrap">
+            <input type="number" id="g_islamic" min="0" max="60" placeholder="0–60">
+            <span class="max-tag">/ 60</span>
+          </div>
+          <span class="error-msg">Enter 0–60.</span>
+        </div>
+        <div class="field-group" id="fg_jor">
+          <label>History of Jordan (out of 40)</label>
+          <div class="input-wrap">
+            <input type="number" id="g_jordan" min="0" max="40" placeholder="0–40">
+            <span class="max-tag">/ 40</span>
+          </div>
+          <span class="error-msg">Enter 0–40.</span>
+        </div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn" onclick="step1Next()">Continue →</button>
+      <button class="btn-ghost btn" onclick="goStep(0)">← Back</button>
+    </div>
+  </div>
+
+  <!-- ─── STEP 2: Field + second year ─── -->
+  <div id="step2" class="hidden fade-in">
+    <div class="card" id="fieldCard">
+      <div class="card-title">Choose Your Field</div>
+      <div class="field-group" id="fg_field2">
+        <label>Field of study</label>
+        <select id="fieldInput2" onchange="renderYear2Subjects()">
+          <option value="">— Select a field —</option>
+          <option value="health">Health</option>
+          <option value="engineering_and_technology">Engineering & Technology</option>
+          <option value="languages_and_humanities">Languages & Humanities</option>
+          <option value="business_administration">Business Administration</option>
+        </select>
+        <span class="error-msg">Please select a field.</span>
+      </div>
+    </div>
+    <div id="year2Card" class="card hidden">
+      <div class="card-title">Second Year Subjects</div>
+      <div class="info-row">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        These four subjects form 70% of your total grade.
+      </div>
+      <div class="grid-2" id="year2Subjects"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn" onclick="step2Next()">Calculate Grade →</button>
+      <button class="btn-ghost btn" onclick="goStep(1)">← Back</button>
+    </div>
+  </div>
+
+  <!-- ─── STEP 3: Results ─── -->
+  <div id="step3" class="hidden fade-in">
+    <div id="scoreCard" class="score-display">
+      <div class="score-label">Total Tawjihi Grade</div>
+      <div class="score-num" id="scoreNum">—</div>
+      <div class="score-sub">out of 100.00</div>
+      <div class="score-breakdown" id="scoreBreakdown"></div>
+    </div>
+
+    <div id="fieldSummaryBar" style="display:flex; align-items:center; justify-content:space-between; background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:12px 18px; margin-bottom:1.5rem; flex-wrap:wrap; gap:10px;">
+      <span style="font-family:var(--mono); font-size:0.78rem; color:var(--text-muted);" id="fieldSummaryLabel">—</span>
+      <span style="font-family:var(--mono); font-size:0.9rem; font-weight:600;" id="fieldSummaryCount">—</span>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Eligible Schools</div>
+      <p style="color:var(--text-muted); font-size:0.82rem; margin-bottom:1rem;">Select a school to see the majors you qualify for.</p>
+      <div class="schools-grid" id="schoolsGrid"></div>
+    </div>
+
+    <div id="majorsCard" class="card hidden">
+      <div class="card-title" id="majorsTitle">Available Majors</div>
+      <ul class="majors-list" id="majorsList"></ul>
+    </div>
+
+    <div id="noSchools" class="hidden" style="text-align:center; padding:2rem; color:var(--text-muted); font-family:var(--mono); font-size:0.85rem;">
+      No eligible schools found for your grade and field. Consider other fields or aim for a higher score.
+    </div>
+
+    <div class="btn-row" style="justify-content: center; margin-top:2rem;">
+      <button class="btn-ghost btn" onclick="restart()">↩ Start Over</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────────────
+const db = [
+  // health
+  ["health","medicine","doctor_of_medicine",98.25],
+  ["health","dentistry","doctor_of_dentistry",97.55],
+  ["health","pharmacy","doctor_of_pharmacy",96.25],
+  ["health","pharmacy","pharmacy",95.85],
+  ["health","nursing","nursing_men",93.70],
+  ["health","nursing","nursing_women",92.95],
+  ["health","rehabilitation_sciences","physical_therapy",93.60],
+  ["health","rehabilitation_sciences","occupational_therapy",91.85],
+  ["health","rehabilitation_sciences","artificial_limbs",90.40],
+  ["health","rehabilitation_sciences","hearing_and_speech_sciences",90.00],
+  // engineering_and_technology
+  ["engineering_and_technology","engineering","computer_engineering",97.05],
+  ["engineering_and_technology","engineering","industrial_engineering",96.25],
+  ["engineering_and_technology","engineering","electrical_engineering",95.15],
+  ["engineering_and_technology","engineering","chemical_engineering",94.05],
+  ["engineering_and_technology","engineering","civil_engineering",90.15],
+  ["engineering_and_technology","engineering","mechanical_engineering",95.00],
+  ["engineering_and_technology","engineering","mechatronics_engineering",95.80],
+  ["engineering_and_technology","engineering","architecture",94.30],
+  ["engineering_and_technology","kasit","computer_science",96.50],
+  ["engineering_and_technology","kasit","computer_information_systems",94.50],
+  ["engineering_and_technology","kasit","business_information_technology",91.55],
+  ["engineering_and_technology","kasit","data_science",93.20],
+  ["engineering_and_technology","kasit","cybersecurity",94.75],
+  ["engineering_and_technology","kasit","artificial_intelligence",95.85],
+  ["engineering_and_technology","science","mathematics",87.25],
+  ["engineering_and_technology","science","physics",84.65],
+  ["engineering_and_technology","science","chemistry",88.85],
+  ["engineering_and_technology","science","industrial_chemistry",89.20],
+  ["engineering_and_technology","science","biological_sciences",86.25],
+  ["engineering_and_technology","science","geology",79.55],
+  ["engineering_and_technology","science","medical_laboratory_sciences",91.15],
+  ["engineering_and_technology","science","statistics_and_data_science",86.10],
+  ["engineering_and_technology","agriculture","gardening_and_crops",80.40],
+  ["engineering_and_technology","agriculture","plant_protection",80.20],
+  ["engineering_and_technology","agriculture","site_design_and_coordination",85.60],
+  ["engineering_and_technology","agriculture","animal_production",83.35],
+  ["engineering_and_technology","agriculture","food_science_and_technology",92.95],
+  ["engineering_and_technology","agriculture","human_nutrition_and_diets",96.35],
+  ["engineering_and_technology","agriculture","land_water_and_environment",82.50],
+  ["engineering_and_technology","agriculture","agricultural_economics_and_agricultural_business_management",85.15],
+  // languages_and_humanities
+  ["languages_and_humanities","languages","english_language_and_literature",95.30],
+  ["languages_and_humanities","languages","applied_english",97.10],
+  ["languages_and_humanities","languages","french_language_and_literature",89.15],
+  ["languages_and_humanities","languages","german_english",92.55],
+  ["languages_and_humanities","languages","italian_english",91.05],
+  ["languages_and_humanities","languages","spanish_english",92.85],
+  ["languages_and_humanities","languages","korean_english",90.30],
+  ["languages_and_humanities","languages","chinese_english",95.05],
+  ["languages_and_humanities","languages","russian_english",89.85],
+  ["languages_and_humanities","languages","turkish_english",90.75],
+  ["languages_and_humanities","languages","french_and_english_double_major_program",92.00],
+  ["languages_and_humanities","languages","arabic_language_and_literature",95.35],
+  ["languages_and_humanities","education","class_teacher_women",92.15],
+  ["languages_and_humanities","education","special_education",90.85],
+  ["languages_and_humanities","education","early_childhood_education",86.00],
+  ["languages_and_humanities","education","counseling_and_mental_health",91.30],
+  ["languages_and_humanities","arts","psychology",92.55],
+  ["languages_and_humanities","arts","history",88.10],
+  ["languages_and_humanities","arts","geography",88.05],
+  ["languages_and_humanities","arts","philosophy",85.80],
+  ["languages_and_humanities","arts","sociology",89.40],
+  ["languages_and_humanities","arts","social_work",86.50],
+  ["languages_and_humanities","law","law",95.60],
+  ["languages_and_humanities","political_sciences","political_sciences",91.35],
+  ["languages_and_humanities","archaeology_and_tourism","antiquities",84.00],
+  ["languages_and_humanities","archaeology_and_tourism","heritage_resources_management",83.75],
+  ["languages_and_humanities","archaeology_and_tourism","hospitality_management",86.00],
+  ["languages_and_humanities","archaeology_and_tourism","tourism_management",89.40],
+  ["languages_and_humanities","archaeology_and_tourism","event_management",88.13],
+  ["languages_and_humanities","shariah","foundations_of_religion",88.95],
+  ["languages_and_humanities","shariah","islamic_jurisprudence_and_its_foundation",89.70],
+  ["languages_and_humanities","sports_sciences","physical_education",90.55],
+  ["languages_and_humanities","sports_sciences","movement_sciences_and_sports_training",86.60],
+  // business_administration
+  ["business_administration","business","business_management",93.55],
+  ["business_administration","business","accounting",95.80],
+  ["business_administration","business","finance",92.50],
+  ["business_administration","business","marketing",94.60],
+  ["business_administration","business","management_information_systems",94.50],
+  ["business_administration","business","public_administration",91.05],
+  ["business_administration","business","business_economics",92.05],
+  ["business_administration","business","islamic_banks",89.15],
+];
+
+const FIELD_LABELS = {
+  health: "Health",
+  engineering_and_technology: "Engineering & Technology",
+  languages_and_humanities: "Languages & Humanities",
+  business_administration: "Business Administration"
+};
+
+const SCHOOL_LABELS = {};
+db.forEach(r => { SCHOOL_LABELS[r[1]] = r[1].replace(/_/g,' ').replace(/\b\w/g, c=>c.toUpperCase()); });
+
+const Y2_SUBJECTS = {
+  health: [
+    {id:"y2_adv_eng", label:"Advanced English", max:175},
+    {id:"y2_chem",    label:"Chemistry", max:175},
+    {id:"y2_bio",     label:"Biology", max:175},
+    {id:"y2_math",    label:"Math", max:175},
+  ],
+  engineering_and_technology: [
+    {id:"y2_adv_eng", label:"Advanced English", max:175},
+    {id:"y2_physics", label:"Physics", max:175},
+    {id:"y2_math",    label:"Math", max:175},
+    {id:"y2_geology", label:"Geology", max:175},
+  ],
+  languages_and_humanities: [
+    {id:"y2_adv_eng", label:"Advanced English", max:175},
+    {id:"y2_adv_ara", label:"Advanced Arabic", max:175},
+    {id:"y2_isl_st",  label:"Islamic Studies", max:175},
+    {id:"y2_fin_cul", label:"Financial Culture", max:175},
+  ],
+  business_administration: [
+    {id:"y2_adv_eng", label:"Advanced English", max:175},
+    {id:"y2_biz_math",label:"Business Math", max:175},
+    {id:"y2_fin_cul", label:"Financial Culture", max:175},
+    {id:"y2_isl_sci", label:"Islamic Sciences", max:175},
+  ],
+};
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let knowGrade = true;
+let totalGrade = 0;
+let selectedField = '';
+let y1 = {};
+let y2 = {};
+let grade1 = 0, grade2 = 0;
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function showStep(n) {
+  [0,1,2,3].forEach(i => {
+    const el = document.getElementById('step'+i);
+    el.classList.toggle('hidden', i !== n);
+    el.classList.toggle('fade-in', i === n);
+  });
+  const pct = Math.round(((n+1)/4)*100);
+  document.getElementById('progressFill').style.width = pct+'%';
+  document.getElementById('progressLabel').textContent = `Step ${n+1} / 4`;
+  [0,1,2,3].forEach(i => {
+    const d = document.getElementById('dot'+i);
+    d.classList.toggle('active', i===n);
+    d.classList.toggle('done', i<n);
+  });
+}
+
+function goStep(n) { showStep(n); }
+
+function fieldError(fgId, show) {
+  const el = document.getElementById(fgId);
+  if(!el) return;
+  el.classList.toggle('field-error', show);
+}
+
+function validateNum(id, min, max, fgId) {
+  const v = parseFloat(document.getElementById(id).value);
+  const ok = !isNaN(v) && v >= min && v <= max;
+  fieldError(fgId, !ok);
+  if (ok) {
+    const fg = document.getElementById(fgId);
+    if (fg) fg.classList.remove('subject-failed');
+  }
+  return ok ? v : null;
+}
+
+function checkFail(id, max, fgId) {
+  const v = parseFloat(document.getElementById(id).value);
+  if (!isNaN(v) && v < max / 2) {
+    const fg = document.getElementById(fgId);
+    if (fg) {
+      fg.classList.add('field-error', 'subject-failed');
+      const msg = fg.querySelector('.error-msg');
+      if (msg) msg.textContent = `Failed — minimum passing grade is ${max / 2}.`;
+    }
+    return true;
+  }
+  const fg = document.getElementById(fgId);
+  if (fg) fg.classList.remove('subject-failed');
+  return false;
+}
+
+function setKnowGrade(val) {
+  knowGrade = val;
+  document.querySelectorAll('.toggle-btn').forEach((b,i) => b.classList.toggle('active', i===(val?0:1)));
+  document.getElementById('knowGradeSection').style.display = val ? 'block' : 'none';
+}
+
+// ─── STEP 0 ──────────────────────────────────────────────────────────────────
+function step0Next() {
+  if(knowGrade) {
+    const g = validateNum('totalGradeInput', 0, 100, 'fg_totalGrade');
+    const f = document.getElementById('fieldInput0').value;
+    fieldError('fg_field0', !f);
+    if(g===null || !f) return;
+    totalGrade = g;
+    selectedField = f;
+    showResults();
+    showStep(3);
+  } else {
+    showStep(1);
+  }
+}
+
+// ─── STEP 1 ──────────────────────────────────────────────────────────────────
+function step1Next() {
+  const eng = validateNum('g_english', 0, 100, 'fg_eng');
+  const ara = validateNum('g_arabic',  0, 100, 'fg_ara');
+  const isl = validateNum('g_islamic', 0, 60,  'fg_isl');
+  const jor = validateNum('g_jordan',  0, 40,  'fg_jor');
+  if(eng===null||ara===null||isl===null||jor===null) return;
+  // Check failure thresholds (pass = >= 50% of max)
+  const f1 = checkFail('g_english', 100, 'fg_eng');
+  const f2 = checkFail('g_arabic',  100, 'fg_ara');
+  const f3 = checkFail('g_islamic',  60, 'fg_isl');
+  const f4 = checkFail('g_jordan',   40, 'fg_jor');
+  if(f1||f2||f3||f4) return;
+  y1 = {eng, ara, isl, jor};
+  grade1 = (eng + ara + isl + jor) / 10;
+  showStep(2);
+}
+
+// ─── STEP 2 ──────────────────────────────────────────────────────────────────
+function renderYear2Subjects() {
+  const field = document.getElementById('fieldInput2').value;
+  fieldError('fg_field2', !field);
+  const card = document.getElementById('year2Card');
+  const container = document.getElementById('year2Subjects');
+  if(!field) { card.classList.add('hidden'); return; }
+  card.classList.remove('hidden');
+  card.classList.add('fade-in');
+  const subjects = Y2_SUBJECTS[field] || [];
+  container.innerHTML = subjects.map(s => `
+    <div class="field-group" id="fg_${s.id}">
+      <label>${s.label} (out of ${s.max})</label>
+      <div class="input-wrap">
+        <input type="number" id="${s.id}" min="0" max="${s.max}" placeholder="0–${s.max}" data-max="${s.max}">
+        <span class="max-tag">/ ${s.max}</span>
+      </div>
+      <span class="error-msg">Enter 0–${s.max}.</span>
+    </div>
+  `).join('');
+}
+
+function step2Next() {
+  const field = document.getElementById('fieldInput2').value;
+  fieldError('fg_field2', !field);
+  if(!field) return;
+  const subjects = Y2_SUBJECTS[field];
+  let sum = 0, valid = true, failed = false;
+  for(const s of subjects) {
+    const max = s.max;
+    const v = validateNum(s.id, 0, max, 'fg_'+s.id);
+    if(v===null) { valid=false; } else {
+      if(checkFail(s.id, max, 'fg_'+s.id)) { failed=true; } else { sum += v; }
+    }
+  }
+  if(!valid || failed) return;
+  grade2 = sum / 10;
+  totalGrade = parseFloat((grade1 + grade2).toFixed(2));
+  selectedField = field;
+  showResults();
+  showStep(3);
+}
+
+// ─── RESULTS ─────────────────────────────────────────────────────────────────
+function showResults() {
+  const scoreEl = document.getElementById('scoreNum');
+  scoreEl.textContent = totalGrade.toFixed(2);
+
+  const breakdown = document.getElementById('scoreBreakdown');
+  if(!knowGrade && grade1 && grade2) {
+    breakdown.innerHTML = `
+      <div class="score-part"><div class="val">${grade1.toFixed(1)}</div><div class="lbl">Year 1 / 30</div></div>
+      <div class="score-divider"></div>
+      <div class="score-part"><div class="val">${grade2.toFixed(1)}</div><div class="lbl">Year 2 / 70</div></div>
+    `;
+  } else {
+    breakdown.innerHTML = '';
+  }
+
+  // Build schools
+  const allInField = db.filter(r => r[0]===selectedField);
+  const eligibleInField = allInField.filter(r => r[3]<=totalGrade);
+  const totalCount = allInField.length;
+  const eligibleCount = eligibleInField.length;
+
+  document.getElementById('fieldSummaryLabel').textContent = FIELD_LABELS[selectedField] + ' — all majors';
+  const pct = totalCount > 0 ? Math.round((eligibleCount/totalCount)*100) : 0;
+  const countEl = document.getElementById('fieldSummaryCount');
+  countEl.innerHTML = `<span style="color:var(--blue-core)">${eligibleCount}</span><span style="color:var(--text-dim)"> / ${totalCount}</span><span style="color:var(--text-muted); font-size:0.72rem; margin-left:8px;">(${pct}% eligible)</span>`;
+
+  const schools = [...new Set(eligibleInField.map(r=>r[1]))].sort();
+
+  const grid = document.getElementById('schoolsGrid');
+  const noSchools = document.getElementById('noSchools');
+  const majorsCard = document.getElementById('majorsCard');
+
+  majorsCard.classList.add('hidden');
+
+  if(schools.length === 0) {
+    grid.innerHTML = '';
+    noSchools.classList.remove('hidden');
+    return;
+  }
+  noSchools.classList.add('hidden');
+
+  grid.innerHTML = schools.map(s => `
+    <button class="school-btn" onclick="selectSchool('${s}')">${SCHOOL_LABELS[s]||s}</button>
+  `).join('');
+}
+
+function selectSchool(school) {
+  document.querySelectorAll('.school-btn').forEach(b => b.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+
+  const majors = db
+    .filter(r => r[0]===selectedField && r[1]===school && r[3]<=totalGrade)
+    .sort((a,b)=>b[3]-a[3]);
+
+  const totalInSchool = db.filter(r => r[0]===selectedField && r[1]===school).length;
+  const card = document.getElementById('majorsCard');
+  document.getElementById('majorsTitle').innerHTML =
+    `${SCHOOL_LABELS[school]||school} &nbsp;<span style="font-weight:400; color:var(--blue-light);">${majors.length} / ${totalInSchool} majors</span>`;
+  const list = document.getElementById('majorsList');
+  list.innerHTML = majors.map(m => `
+    <li class="major-item">
+      <span class="major-name">${m[2].replace(/_/g,' ')}</span>
+      <span class="major-score">Min ${m[3]}</span>
+    </li>
+  `).join('');
+  card.classList.remove('hidden');
+  card.classList.add('fade-in');
+  card.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function restart() {
+  knowGrade = true;
+  totalGrade = 0;
+  selectedField = '';
+  y1 = {};
+  y2 = {};
+  grade1 = 0;
+  grade2 = 0;
+  document.querySelectorAll('input[type="number"]').forEach(i=>i.value='');
+  document.querySelectorAll('select').forEach(s=>s.value='');
+  document.querySelectorAll('.field-error').forEach(e=>e.classList.remove('field-error'));
+  document.querySelectorAll('.subject-failed').forEach(e=>e.classList.remove('subject-failed'));
+  document.getElementById('year2Card').classList.add('hidden');
+  document.getElementById('majorsCard').classList.add('hidden');
+  document.getElementById('knowGradeSection').style.display='block';
+  document.querySelectorAll('.toggle-btn')[0].classList.add('active');
+  document.querySelectorAll('.toggle-btn')[1].classList.remove('active');
+  showStep(0);
+}
+
+// init
+showStep(0);
+</script>
+</body>
+</html>
