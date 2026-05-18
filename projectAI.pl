@@ -227,8 +227,8 @@ get_eligible_schools(Field, Grade, Schools) :-
     sort(SchoolList, Schools).
 
 get_eligible_majors(Field, School, Grade, Majors) :-
-    collect_eligible_majors(Field, School, Grade, [], RevMajors),
-    reverse_list(RevMajors, Majors).
+    collect_eligible_majors(Field, School, Grade, [], Majors).
+
 
 collect_eligible_majors(Field, School, Grade, Acc, [Major|Majors]) :-
     major(Field, School, Major, Min),
@@ -241,22 +241,10 @@ collect_eligible_majors(Field, School, Grade, Acc, []) :-
          \+ member(Major, Acc)
        ).
 
-reverse_list(List, Reversed) :-
-    reverse_list(List, [], Reversed).
-
-reverse_list([], Acc, Acc).
-reverse_list([H|T], Acc, Reversed) :-
-    reverse_list(T, [H|Acc], Reversed).
-
-print_schools([]).
-print_schools([H|T]) :-
+listPrinter([]).
+listPrinter([H|T]) :-
     write(' - '), writeln(H),
-    print_schools(T).
-
-print_majors([]).
-print_majors([H|T]) :-
-    write(' - '), writeln(H),
-    print_majors(T).
+    listPrinter(T).
 
 get_valid_school(Field, Grade, School) :-
     write('Enter the school you are interested in from the list above: '), nl,
@@ -287,13 +275,13 @@ start :-
         write('No eligible schools found for your grade and field.'), nl
     ;
         write('The schools available for you based on your field and total grade are:'), nl,
-        print_schools(Schools),
+        listPrinter(Schools),
         get_valid_school(Field, TotalGrade, SelectedSchool),
         get_eligible_majors(Field, SelectedSchool, TotalGrade, Majors),
         (Majors == [] ->
             write('No eligible majors found in that school for your grade and field.'), nl
         ;
             format('Eligible majors in ~w:~n', [SelectedSchool]),
-            print_majors(Majors)
+            listPrinter(Majors)
         )
     ).
