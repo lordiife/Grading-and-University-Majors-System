@@ -235,6 +235,7 @@ collect_eligible_majors(Field, School, Grade, Acc, [Major|Majors]) :-
     Grade >= Min,
     \+ member(Major, Acc),
     collect_eligible_majors(Field, School, Grade, [Major|Acc], Majors).
+
 collect_eligible_majors(Field, School, Grade, Acc, []) :-
     \+ ( major(Field, School, Major, Min),
          Grade >= Min,
